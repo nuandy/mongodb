@@ -1,0 +1,79 @@
+#! /bin/sh
+
+# start / stop script for mongodb
+
+# Author: Andy Nu nuandy@gmail.com
+
+# Source function library.
+. /lib/lsb/init-functions
+
+RETURNVALUE=0
+PIDFILE=/var/run/mongodb.pid
+DAEMON="/opt/mongo/bin/mongod"
+PROG="mongod"
+OPTIONS="--logpath /data/mongo.log --dbpath /data/db run"
+LOCKFILE="/var/lock/mongod"
+
+start() {
+    if [ ! -x $DAEMON ]
+    then
+        echo $DAEMON not found
+        exit 5
+    fi
+
+    log_daemon_msg "Starting mongoDB daemon"
+    log_progress_msg $PROG
+
+    start-stop-daemon --background --start --quiet --pidfile $PIDFILE \
+                      --make-pidfile --exec $DAEMON -- $OPTIONS
+    retval=$?
+    
+    if [ $RETURNVALUE -eq 0 ]
+    then
+        log_end_msg 0
+    else
+        log_end_msg 1
+    fi
+    return $RETURNVALUE
+}
+
+stop() {
+  log_daemon_msg "Stopping mongoDB daemon"
+  log_progress_msg $PROG
+  start-stop-daemon --stop --pidfile $PIDFILE --retry 10 \
+                    --exec $DAEMON
+    
+    retval=$?
+    
+    if [ $RETURNVALUE -eq 0 ] && rm -f $LOCKFILE 
+    then
+        log_end_msg 0
+    else
+        log_end_msg 1
+    fi
+    rm -f $PIDFILE
+    return $RETURNFILE
+}
+
+restart() {
+    stop
+    start
+}
+
+# How we were called
+case "$1" in
+    start)
+        $1
+        ;;
+    stop)
+        $1
+        ;;
+    restart)
+        $1
+        ;;
+    *)
+    echo "Usage: $0 {start|stop|restart}"
+    exit 2
+esac
+
+exit $?
