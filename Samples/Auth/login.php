@@ -1,6 +1,6 @@
 <?php
-include_once ("db_class.php");
-include_once ("login_class.php");
+include_once("db_class.php");
+include_once("login_class.php");
 
 if (isset($_POST["submit"]) && !isset($_COOKIE["Email_Mongo"])) { 
   $auth = new Auth();
@@ -11,7 +11,6 @@ if(isset($_COOKIE["Email_Mongo"])) {
   $auth = new Auth();
   $auth -> check_cookie($_COOKIE["Email_Mongo"]);
 }
-
 ?>
 
 <form action="<?php echo $_SERVER["PHP_SELF"]?>" method="post">
@@ -20,7 +19,7 @@ if(isset($_COOKIE["Email_Mongo"])) {
       <td colspan=2><h1>Login</h1></td>
     </tr>
     <tr>
-      <td>Username:</td>
+      <td>Email:</td>
       <td><input type="text" name="email" maxlength="40"></td>
     </tr>
     <tr>
